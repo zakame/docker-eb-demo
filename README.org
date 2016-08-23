@@ -171,3 +171,5 @@ https://github.com/zakame/docker-eb-demo
   - [[http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.html][Deploying Elastic Beanstalk Applications from Docker Containers]]
 
 * Finis
+
+  [[http://25.media.tumblr.com/tumblr_li7qqi3qDc1qcn249o1_400.gif]]
