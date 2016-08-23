@@ -1,0 +1,173 @@
+#+TITLE: Docker on AWS
+#+AUTHOR: Zak B. Elep
+#+EMAIL:  zak.elep@yoyo-holdings.com
+#+OPTIONS: toc:nil num:nil email:t
+#+REVEAL_THEME: night
+
+https://github.com/zakame/docker-eb-demo
+
+* About Me
+
+  - @zakame in GitHub, Twitter, FB
+  - Co-Founder, Chief Architect, YOYO Holdings
+  - Recovering Sysadmin
+  - Hacks on Perl, Docker, Emacs, Android
+
+* What's this for?
+
+  - Short intro on using Docker on AWS via Elastic Beanstalk
+  - Assumes some familiarity with Docker ecosystem
+  - Assumes some familiarity with AWS infra (EC2/S3, ELB, Beanstalk)
+
+* Why Docker on Elastic Beanstalk?
+
+  - Distribution
+  - Maintenance
+  - Development
+
+** Distribution
+
+   - Software systems as containers
+   - (Mostly) standalone systems (especially for exotic setups)
+   - (Mostly) less chance of incompatibilities/inconsistencies
+
+** Maintenance
+
+   - Growing from "pet to cattle" setups
+   - Reducing moving targets (e.g. external dependencies)
+   - Redundancy (e.g. =eb swap=, ELB)
+
+** Development
+
+   - Builds up on distribution and maintenance merits
+   - Correlate code history with system history (e.g. git vs docker commits)
+   - Leverage other AWS solutions (e.g. RDS, Lambda)
+
+* Demo: Cat GIFs!
+
+  http://cats.zakame.org
+
+  See github above ;)
+
+** Point to Elastic Beanstalk DNS
+
+  #+BEGIN_SRC sh :results output :exports both
+  dig +short cats.zakame.org.
+  #+END_SRC
+
+  #+RESULTS:
+  : zakame-cats.us-east-1.elasticbeanstalk.com.
+
+** A Simple Perl app
+
+   #+BEGIN_SRC perl :results none
+   use Plack::Builder;
+
+   my @images = <DATA>;
+
+   # Its dangerous, take a cat with you!
+   builder {
+       mount '/' => builder {
+           enable 'TMT',
+               include_path => 'tmpl',
+               macro => +{
+                   url => sub { $images[int rand @images] },
+               };
+       };
+   };
+
+   __DATA__
+   http://ak-hdl.buzzfed.com/static/2013-10/enhanced/webdr05/15/9/anigif_enhanced-buzz-26388-1381844103-11.gif
+   http://ak-hdl.buzzfed.com/static/2013-10/enhanced/webdr01/15/9/anigif_enhanced-buzz-31540-1381844535-8.gif
+   http://ak-hdl.buzzfed.com/static/2013-10/enhanced/webdr05/15/9/anigif_enhanced-buzz-26390-1381844163-18.gif
+   #+END_SRC
+
+** A Simple Dockerfile
+
+   #+BEGIN_SRC dockerfile :results none
+   # our base image
+   FROM perl:5.24.0
+
+   # install Carton
+   RUN cpanm Carton
+
+   # install CPAN modules needed by the Perl app
+   COPY cpanfile* /usr/src/app/
+   WORKDIR /usr/src/app
+   RUN carton install --deployment
+
+   # copy files required for the app to run
+   COPY app.psgi /usr/src/app
+   COPY tmpl/index /usr/src/app/tmpl/
+
+   # tell the port number the container should expose
+   EXPOSE 5000
+
+   # run the application
+   CMD ["carton", "exec", "plackup", "app.psgi"]
+   #+END_SRC
+
+** Elastic Beanstalk setup
+
+   #+BEGIN_SRC sh :results none
+   pip install awsebcli
+   #+END_SRC
+
+   #+BEGIN_SRC sh :results none
+   eb init
+   eb create --cname zakame-cats-live blue
+   #+END_SRC
+
+   #+BEGIN_SRC sh :results output :exports both
+   eb status blue
+   #+END_SRC
+
+   #+RESULTS:
+   #+begin_example
+   Environment details for: blue
+     Application name: docker-eb-demo
+     Region: ap-northeast-1
+     Deployed Version: app-160823_141048
+     Environment ID: e-r9afci3pxd
+     Platform: 64bit Amazon Linux 2016.03 v2.1.3 running Docker 1.11.1
+     Tier: WebServer-Standard
+     CNAME: zakame-cats-live.us-east-1.elasticbeanstalk.com
+     Updated: 2016-08-23 06:27:00.783000+00:00
+     Status: Ready
+     Health: Red
+   #+end_example
+
+   #+BEGIN_SRC sh :results none
+   eb ssh blue
+   #+END_SRC
+
+** Blue-green setup
+
+   #+BEGIN_SRC sh :results none
+   eb clone --cname zakame-cats-test blue --clone_name green 
+   #+END_SRC
+
+   #+BEGIN_SRC sh :results none
+   eb status green
+   #+END_SRC
+
+   #+BEGIN_SRC sh :results none
+   eb swap
+   #+END_SRC
+
+* EB Dashboard
+
+  https://console.aws.amazon.com/elasticbeanstalk
+
+* Gotchas
+
+  - Need =AWSElasticBeanstalkFullAccess= policy on IAM User when trying out
+    (don't do on prod though! http://stackoverflow.com/questions/31977441/aws-elastic-beanstalk-servicerole-error-when-logging-in-to-a-role
+
+* More Information
+
+  - [[https://docs.aws.amazon.com/console/elasticbeanstalk/get-started][Get Started using Elastic Beanstalk]]
+  - [[http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_dockerpreconfig.walkthrough.html][Getting Started with Preconfigured Docker Containers]]
+  - [[http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.html][Deploying Elastic Beanstalk Applications from Docker Containers]]
+
+* Finis
