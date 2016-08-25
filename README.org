@@ -3,6 +3,7 @@
 #+EMAIL:  zak.elep@yoyo-holdings.com
 #+OPTIONS: toc:nil num:nil email:t
 #+REVEAL_THEME: night
+#+REVEAL_PLUGINS: (notes)
 
 https://github.com/zakame/docker-eb-demo
 
@@ -13,11 +14,22 @@ https://github.com/zakame/docker-eb-demo
   - Recovering Sysadmin
   - Hacks on Perl, Docker, Emacs, Android
 
+  #+BEGIN_NOTES
+  This is written using Emacs OrgMode, publishing using Reveal.js.
+  #+END_NOTES
+
 * What's this for?
 
   - Short intro on using Docker on AWS via Elastic Beanstalk
   - Assumes some familiarity with Docker ecosystem
   - Assumes some familiarity with AWS infra (EC2/S3, ELB, Beanstalk)
+
+  #+BEGIN_NOTES
+  I originally envisioned this talk as more of a demo, but as I saw the
+  actual audience, I resolved to describe more of Docker and containers
+  in general as well as their primary benefit especially when taken into
+  the AWS ecosystem.
+  #+END_NOTES
 
 * Why Docker on Elastic Beanstalk?
 
@@ -25,11 +37,25 @@ https://github.com/zakame/docker-eb-demo
   - Maintenance
   - Development
 
+  #+BEGIN_NOTES
+  Big words, but this really boils around to solving this problem:
+
+  "How can I share my work with others while making it easy for them to
+  change it?"
+  #+END_NOTES
+
 ** Distribution
 
    - Software systems as containers
    - (Mostly) standalone systems (especially for exotic setups)
    - (Mostly) less chance of incompatibilities/inconsistencies
+
+   #+BEGIN_NOTES
+   Thinking of containers as "boxes" does wonders here, because it lets
+   your treat the system as something you can "hold" (that is, know what
+   is inside the box, as well as what's outside) and something that you
+   can "move/share" (as boxes tend to be.)
+   #+END_NOTES
 
 ** Maintenance
 
@@ -37,17 +63,36 @@ https://github.com/zakame/docker-eb-demo
    - Reducing moving targets (e.g. external dependencies)
    - Redundancy (e.g. =eb swap=, ELB)
 
+   #+BEGIN_NOTES
+   Sysadmins especially love stability, and having a concept of "stuff
+   inside a box" strengthens the idea of containers being (near)
+   immutable systems.
+   #+END_NOTES
+
 ** Development
 
    - Builds up on distribution and maintenance merits
    - Correlate code history with system history (e.g. git vs docker commits)
    - Leverage other AWS solutions (e.g. RDS, Lambda)
 
+   #+BEGIN_NOTES
+   Developers love to tinker, and knowing that they can treat both boxes
+   and the stuff inside them as parts they can know and change, while
+   building up on the fact that they can share those boxes and maintain
+   them, gives an empowering feeling.
+   #+END_NOTES
+
 * Demo: Cat GIFs!
 
   http://cats.zakame.org
 
   See github above ;)
+
+  #+BEGIN_NOTES
+  I've since shut it down as the EB application running 2 environments
+  is quite expensive for my personal AWS to handle.  That said, it is
+  very easy to set it up again, should the need arise.
+  #+END_NOTES
 
 ** Point to Elastic Beanstalk DNS
 
@@ -56,7 +101,15 @@ https://github.com/zakame/docker-eb-demo
   #+END_SRC
 
   #+RESULTS:
-  : zakame-cats.us-east-1.elasticbeanstalk.com.
+  : zakame-cats-prod.us-east-1.elasticbeanstalk.com.
+
+  #+BEGIN_NOTES
+  This is meant to illustrate two things:
+
+  - The fact that I love cats :3
+  - The fact that it is easy to alias your Docker/EB application with a
+    custom (sub)domain name.
+  #+END_NOTES
 
 ** A Simple Perl app
 
@@ -81,6 +134,13 @@ https://github.com/zakame/docker-eb-demo
    http://ak-hdl.buzzfed.com/static/2013-10/enhanced/webdr01/15/9/anigif_enhanced-buzz-31540-1381844535-8.gif
    http://ak-hdl.buzzfed.com/static/2013-10/enhanced/webdr05/15/9/anigif_enhanced-buzz-26390-1381844163-18.gif
    #+END_SRC
+
+   #+BEGIN_NOTES
+   This was adapted from https://github.com/docker/docker-birthday-3
+   (using Perl Plack instead of Python Flask.)  This is meant to
+   emphasize our "exotic" Docker setup vs traditional PaaS/IaaS setups
+   that supported major languages other than Perl.
+   #+END_NOTES
 
 ** A Simple Dockerfile
 
@@ -141,6 +201,11 @@ https://github.com/zakame/docker-eb-demo
    eb ssh blue
    #+END_SRC
 
+   #+BEGIN_NOTES
+   Here is the start of the demo.  I meant to show a bit more here about
+   EB, especially the environment swapping.
+   #+END_NOTES
+
 ** Blue-green setup
 
    #+BEGIN_SRC sh :results none
@@ -155,6 +220,11 @@ https://github.com/zakame/docker-eb-demo
    eb swap
    #+END_SRC
 
+   #+BEGIN_NOTES
+   This shows a dead-simple setup for near-zero upgrade downtime, that
+   one can do in EB.
+   #+END_NOTES
+
 * EB Dashboard
 
   https://console.aws.amazon.com/elasticbeanstalk
@@ -163,6 +233,12 @@ https://github.com/zakame/docker-eb-demo
 
   - Need =AWSElasticBeanstalkFullAccess= policy on IAM User when trying out
     (don't do on prod though! http://stackoverflow.com/questions/31977441/aws-elastic-beanstalk-servicerole-error-when-logging-in-to-a-role
+
+  #+BEGIN_NOTES
+  I discovered this while setting up the demo environment on my personal
+  AWS account (which didn't have any EB applications before, having them
+  on my work account instead.)
+  #+END_NOTES
 
 * More Information
 
