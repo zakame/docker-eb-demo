@@ -43,6 +43,13 @@
 
 </ul>
 
+<aside class="notes">
+<p>
+This is written using Emacs OrgMode, publishing using Reveal.js.
+</p>
+
+</aside>
+
 </section>
 </section>
 <section>
@@ -54,6 +61,16 @@
 <li>Assumes some familiarity with AWS infra (EC2/S3, ELB, Beanstalk)</li>
 
 </ul>
+
+<aside class="notes">
+<p>
+I originally envisioned this talk as more of a demo, but as I saw the
+actual audience, I resolved to describe more of Docker and containers
+in general as well as their primary benefit especially when taken into
+the AWS ecosystem.
+</p>
+
+</aside>
 
 </section>
 </section>
@@ -67,6 +84,18 @@
 
 </ul>
 
+<aside class="notes">
+<p>
+Big words, but this really boils around to solving this problem:
+</p>
+
+<p>
+"How can I share my work with others while making it easy for them to
+change it?"
+</p>
+
+</aside>
+
 </section>
 <section id="slide-orgheadline3">
 <h3 id="orgheadline3">Distribution</h3>
@@ -76,6 +105,16 @@
 <li>(Mostly) less chance of incompatibilities/inconsistencies</li>
 
 </ul>
+
+<aside class="notes">
+<p>
+Thinking of containers as "boxes" does wonders here, because it lets
+your treat the system as something you can "hold" (that is, know what
+is inside the box, as well as what's outside) and something that you
+can "move/share" (as boxes tend to be.)
+</p>
+
+</aside>
 
 </section>
 <section id="slide-orgheadline4">
@@ -87,6 +126,15 @@
 
 </ul>
 
+<aside class="notes">
+<p>
+Sysadmins especially love stability, and having a concept of "stuff
+inside a box" strengthens the idea of containers being (near)
+immutable systems.
+</p>
+
+</aside>
+
 </section>
 <section id="slide-orgheadline5">
 <h3 id="orgheadline5">Development</h3>
@@ -96,6 +144,16 @@
 <li>Leverage other AWS solutions (e.g. RDS, Lambda)</li>
 
 </ul>
+
+<aside class="notes">
+<p>
+Developers love to tinker, and knowing that they can treat both boxes
+and the stuff inside them as parts they can know and change, while
+building up on the fact that they can share those boxes and maintain
+them, gives an empowering feeling.
+</p>
+
+</aside>
 
 </section>
 </section>
@@ -109,6 +167,15 @@
 <p>
 See github above ;)
 </p>
+
+<aside class="notes">
+<p>
+I've since shut it down as the EB application running 2 environments
+is quite expensive for my personal AWS to handle.  That said, it is
+very easy to set it up again, should the need arise.
+</p>
+
+</aside>
 
 </section>
 <section id="slide-orgheadline7">
@@ -124,6 +191,20 @@ zakame-cats-prod.us-east-1.elasticbeanstalk.com.
 54.225.221.170
 50.17.210.230
 </pre>
+
+<aside class="notes">
+<p>
+This is meant to illustrate two things:
+</p>
+
+<ul>
+<li>The fact that I love cats :3</li>
+<li>The fact that it is easy to alias your Docker/EB application with a
+custom (sub)domain name.</li>
+
+</ul>
+
+</aside>
 
 </section>
 <section id="slide-orgheadline8">
@@ -151,6 +232,16 @@ http:<span style="color: #6089a0; font-weight: bold;">//</span><span style="colo
 http:<span style="color: #6089a0; font-weight: bold;">//</span><span style="color: #dfdbc1;">ak</span>-hdl.buzzfed.com/static/2013-10/enhanced/webdr05/15/9/anigif_enhanced-buzz-26390-1381844163-18.gif
 </pre>
 </div>
+
+<aside class="notes">
+<p>
+This was adapted from <a href="https://github.com/docker/docker-birthday-3">https://github.com/docker/docker-birthday-3</a>
+(using Perl Plack instead of Python Flask.)  This is meant to
+emphasize our "exotic" Docker setup vs traditional PaaS/IaaS setups
+that supported major languages other than Perl.
+</p>
+
+</aside>
 
 </section>
 <section id="slide-orgheadline9">
@@ -222,6 +313,14 @@ Environment details for: blue
 </pre>
 </div>
 
+<aside class="notes">
+<p>
+Here is the start of the demo.  I meant to show a bit more here about
+EB, especially the environment swapping.
+</p>
+
+</aside>
+
 </section>
 <section id="slide-orgheadline11">
 <h3 id="orgheadline11">Blue-green setup</h3>
@@ -243,6 +342,14 @@ Environment details for: blue
 </pre>
 </div>
 
+<aside class="notes">
+<p>
+This shows a dead-simple setup for near-zero upgrade downtime, that
+one can do in EB.
+</p>
+
+</aside>
+
 </section>
 </section>
 <section>
@@ -263,6 +370,15 @@ Environment details for: blue
 
 </ul>
 
+<aside class="notes">
+<p>
+I discovered this while setting up the demo environment on my personal
+AWS account (which didn't have any EB applications before, having them
+on my work account instead.)
+</p>
+
+</aside>
+
 </section>
 </section>
 <section>
@@ -282,7 +398,8 @@ Environment details for: blue
 <h2 id="orgheadline16">Finis</h2>
 
 <div class="figure">
-<p><img src="http://25.media.tumblr.com/tumblr_li7qqi3qDc1qcn249o1_400.gif" alt="tumblr_li7qqi3qDc1qcn249o1_400.gif"></p>
+<p><img src="http://25.media.tumblr.com/tumblr_li7qqi3qDc1qcn249o1_400.gif" alt="tumblr_li7qqi3qDc1qcn249o1_400.gif">
+</p>
 </div>
 </section>
 </section>
@@ -316,10 +433,6 @@ multiplex: {
 
 // Optional libraries used to extend on reveal.js
 dependencies: [
- { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
- { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
- { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
  { src: 'https://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
 });
 </script>
